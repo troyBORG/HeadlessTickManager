@@ -16,4 +16,9 @@ public partial class DynamicTickRate : ResoniteMod
         Config = GetConfiguration();
         Config?.Save(true);
     }
+
+    private static StandaloneFrooxEngineRunner runner =
+        (StandaloneFrooxEngineRunner)Type.GetType("FrooxEngine.Headless.Program, Resonite")!
+        .GetField("runner", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
+        .GetValue(null)!;
 }
