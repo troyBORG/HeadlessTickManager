@@ -16,7 +16,7 @@ public partial class DynamicTickRate : ResoniteMod
         Config = GetConfiguration();
         Config?.Save(true);
 
-        if (ModLoader.IsHeadless)
+        if (ModLoader.IsHeadless && Config!.GetValue(Enable))
         {
             Engine.Current.WorldManager.WorldAdded += OnUserJoinLeave;
             Engine.Current.WorldManager.WorldAdded += OnWorldAddedRemoved;
