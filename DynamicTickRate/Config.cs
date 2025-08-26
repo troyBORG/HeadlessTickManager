@@ -31,4 +31,11 @@ public partial class DynamicTickRate : ResoniteMod
                 "AddedTicksPerUser",
                 "How much the Tick Rate is increased per user",
                 () => 2);
+
+    [AutoRegisterConfigKey]
+    public static readonly ModConfigurationKey<Byte> AddedTicksPerWorld =
+            new ModConfigurationKey<Byte>(
+                "AddedTicksPerWorld",
+                "How much the Tick Rate is increased per world",
+                () => 4);
 }

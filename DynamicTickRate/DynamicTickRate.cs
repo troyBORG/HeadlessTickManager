@@ -19,6 +19,7 @@ public partial class DynamicTickRate : ResoniteMod
         if (ModLoader.IsHeadless)
         {
             Engine.Current.WorldManager.WorldAdded += OnUserJoinLeave;
+            Engine.Current.WorldManager.WorldAdded += OnWorldAddedRemoved;
         }
         else Msg("This mod is intended for headless clients only, please uninstall");
     }
