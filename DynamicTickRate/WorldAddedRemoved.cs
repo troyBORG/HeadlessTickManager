@@ -14,17 +14,22 @@ public partial class DynamicTickRate : ResoniteMod
 
     private static void OnWorldAdded(World world)
     {
-        if (Engine.Current.WorldManager.WorldCount > 2 && runner.TickRate < Config!.GetValue(MaxTickRate))
+        if (Engine.Current.WorldManager.WorldCount > 2)
         {
-            runner.TickRate = MathX.Min(runner.TickRate + Config!.GetValue(AddedTicksPerWorld), Config!.GetValue(MaxTickRate));
+            TargetTickRate += Config!.GetValue(AddedTicksPerWorld);
+
+            runner.TickRate = MathX.Clamp(TargetTickRate, Config!.GetValue(MinTickRate), Config!.GetValue(MaxTickRate));
         }
     }
 
     private static void OnWorldRemoved(World world)
     {
-        if (Engine.Current.WorldManager.WorldCount > 2 && runner.TickRate > Config!.GetValue(MinTickRate))
+        if (Engine.Current.WorldManager.WorldCount > 2)
         {
-            runner.TickRate = MathX.Max(runner.TickRate - Config!.GetValue(AddedTicksPerWorld), Config!.GetValue(MinTickRate));
+            TargetTickRate -= Config!.GetValue(AddedTicksPerWorld);
+            TargetTickRate -= (Config!.GetValue(AddedTicksPerUser) * (world.UserCount - 1));
+
+            runner.TickRate = MathX.Clamp(TargetTickRate, Config!.GetValue(MinTickRate), Config!.GetValue(MaxTickRate));
         }
     }
 }

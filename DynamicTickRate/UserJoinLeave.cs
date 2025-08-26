@@ -10,30 +10,25 @@ public partial class DynamicTickRate : ResoniteMod
     {
         world.UserJoined += OnUserJoin;
         world.UserLeft += OnUserLeave;
-        world.WorldDestroyed += OnWorldClose;
     }
 
     private static void OnUserJoin(User user)
     {
-        if (!user.IsHost && runner.TickRate < Config!.GetValue(MaxTickRate))
+        if (!user.IsHost)
         {
-            runner.TickRate = MathX.Min(runner.TickRate + Config!.GetValue(AddedTicksPerUser), Config!.GetValue(MaxTickRate));
+            TargetTickRate += Config!.GetValue(AddedTicksPerUser);
+
+            runner.TickRate = MathX.Clamp(TargetTickRate, Config!.GetValue(MinTickRate), Config!.GetValue(MaxTickRate));
         }
     }
 
     private static void OnUserLeave(User user)
     {
-        if (!user.IsHost && runner.TickRate > Config!.GetValue(MinTickRate))
+        if (!user.IsHost)
         {
-            runner.TickRate = MathX.Max(runner.TickRate - Config!.GetValue(AddedTicksPerUser), Config!.GetValue(MinTickRate));
-        }
-    }
+            TargetTickRate -= Config!.GetValue(AddedTicksPerUser);
 
-    private static void OnWorldClose(World world)
-    {
-        if (runner.TickRate > Config!.GetValue(MinTickRate))
-        {
-            runner.TickRate = MathX.Max(runner.TickRate - (Config!.GetValue(AddedTicksPerUser) * (world.UserCount - 1)), Config!.GetValue(MinTickRate));
+            runner.TickRate = MathX.Clamp(TargetTickRate, Config!.GetValue(MinTickRate), Config!.GetValue(MaxTickRate));
         }
     }
 }

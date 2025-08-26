@@ -19,6 +19,7 @@ public partial class DynamicTickRate : ResoniteMod
         if (ModLoader.IsHeadless && Config!.GetValue(Enable))
         {
             runner.TickRate = Config!.GetValue(MinTickRate);
+            TargetTickRate = runner.TickRate;
             Engine.Current.WorldManager.WorldAdded += OnUserJoinLeave;
             Engine.Current.WorldManager.WorldAdded += OnWorldAddedRemoved;
         }
@@ -29,4 +30,6 @@ public partial class DynamicTickRate : ResoniteMod
         (StandaloneFrooxEngineRunner)Type.GetType("FrooxEngine.Headless.Program, Resonite")!
         .GetField("runner", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
         .GetValue(null)!;
+
+    private static float TargetTickRate;
 }
