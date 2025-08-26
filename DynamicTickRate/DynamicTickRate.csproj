@@ -34,9 +34,5 @@
       <HintPath>$(ResonitePath)Elements.Core.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="Elements.Assets">
-      <HintPath>$(ResonitePath)Elements.Assets.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
   </ItemGroup>
 </Project>
