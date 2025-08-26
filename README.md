@@ -13,7 +13,7 @@ A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoade
 
 ## Config Options
 
-- `Enabled`
+- `Enable`
   - Determines if the mod runs or not.
 
 - `MinTickRate`
