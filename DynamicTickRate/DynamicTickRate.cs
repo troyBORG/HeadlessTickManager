@@ -15,6 +15,12 @@ public partial class DynamicTickRate : ResoniteMod
     {
         Config = GetConfiguration();
         Config?.Save(true);
+
+        if (ModLoader.IsHeadless)
+        {
+            Engine.Current.WorldManager.WorldAdded += OnUserJoinLeave;
+        }
+        else Msg("This mod is intended for headless clients only, please uninstall");
     }
 
     private static StandaloneFrooxEngineRunner runner =
