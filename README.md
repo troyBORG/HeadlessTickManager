@@ -2,6 +2,8 @@
 
 A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that adjusts the tick rate of the headless client based on user and world count.
 
+# ⚠️Warning⚠️
+
 This mod is **heavily experimental**, it may or may not help but the goal is to reduce overall system resources while avoiding desync in larger sessions. Feel free to experiment with different configurations as the mod likely will need tuning for the hardware, network, and sessions you want to run.
 
 ## Requirements
