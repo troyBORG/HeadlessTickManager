@@ -1,34 +1,24 @@
-using Elements.Core;
 using FrooxEngine;
-using ResoniteModLoader;
 
 namespace DynamicTickRate;
 
-public partial class DynamicTickRate : ResoniteMod
+public partial class DynamicTickRate
 {
     private static void OnUserJoinLeave(World world)
     {
         world.UserJoined += OnUserJoin;
-        world.UserLeft += OnUserLeave;
+        world.UserLeft   += OnUserLeave;
     }
 
     private static void OnUserJoin(User user)
     {
-        if (!user.IsHost)
-        {
-            TargetTickRate += Config!.GetValue(AddedTicksPerUser);
-
-            runner.TickRate = MathX.Clamp(TargetTickRate, Config!.GetValue(MinTickRate), Config!.GetValue(MaxTickRate));
-        }
+        if (user.IsHost) return;
+        Controller?.OnUserJoin(user.World);
     }
 
     private static void OnUserLeave(User user)
     {
-        if (!user.IsHost)
-        {
-            TargetTickRate -= Config!.GetValue(AddedTicksPerUser);
-
-            runner.TickRate = MathX.Clamp(TargetTickRate, Config!.GetValue(MinTickRate), Config!.GetValue(MaxTickRate));
-        }
+        if (user.IsHost) return;
+        Controller?.OnUserLeave(user.World);
     }
 }

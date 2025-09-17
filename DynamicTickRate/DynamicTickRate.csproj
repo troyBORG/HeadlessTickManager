@@ -6,11 +6,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamicTickRate</RootNamespace>
     <AssemblyTitle>DynamicTickRate</AssemblyTitle>
-    <Authors>Raidriar796</Authors>
-    <Copyright>Copyright © 2025 Raidriar796</Copyright>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <Authors>troyBORG</Authors>
+    <Copyright>Copyright © 2025 troyBORG</Copyright>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
