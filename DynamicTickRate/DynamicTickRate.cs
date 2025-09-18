@@ -1,3 +1,4 @@
+using HarmonyLib;
 using System;
 using System.IO;
 using System.Reflection;
@@ -51,6 +52,12 @@ public partial class DynamicTickRate : ResoniteMod
                 Msg("❌ [DynamicTickRate] runner reflection failed (null). Is this the headless build?");
                 return;
             }
+
+            // Patch SignalR BroadcastSession logging (KeyListenerAdded, Sending info, SessionInfo spam)
+            // These logs are very noisy in headless servers and provide no useful info.
+            var harmony = new Harmony("troyBORG.DynamicTickRate.SignalRNoisePatch");
+            SignalRNoisePatch.Apply(harmony);
+
 
             // Build tuning from either RML config or JSON fallback (System.Text.Json)
             TickTuning tuning;
