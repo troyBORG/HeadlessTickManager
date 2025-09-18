@@ -2,9 +2,10 @@
 
 A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that adjusts the tick rate of the headless client based on user and world count.
 
-⚠️ **Disclaimer**  
-This is an **unofficial fork** of [Raidriar796/DynamicTickRate](https://github.com/Raidriar796/DynamicTickRate).  
+### ⚠️ **Disclaimer**  This is an **unofficial fork** of [Raidriar796/DynamicTickRate](https://github.com/Raidriar796/DynamicTickRate).  
 It is **not associated with or endorsed by the original author**.  
+
+
 The upstream repository is the canonical source. This fork is maintained separately and will not submit pull requests upstream.  
 
 The original author has asked that no LLM- or AI-generated code be contributed back to their project.  
