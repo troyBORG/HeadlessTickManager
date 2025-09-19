@@ -1,59 +1,49 @@
-# DynamicTickRate (AI Enhanced Fork)
+# HeadlessTickManager
 
-A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that adjusts the tick rate of the headless client based on user and world count.
+A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that dynamically adjusts the tick rate of the headless client based on world activity and user counts.
 
-### ⚠️ **Disclaimer**  This is an **unofficial fork** of [Raidriar796/DynamicTickRate](https://github.com/Raidriar796/DynamicTickRate).  
-It is **not associated with or endorsed by the original author**.  
+This project started as an exploration of [DynamicTickRate](https://github.com/Raidriar796/DynamicTickRate).  
+That mod served as a reference point — especially for handling user join/leave events and world counting syntax.  
 
-
-The upstream repository is the canonical source. This fork is maintained separately and will not submit pull requests upstream.  
-
-The original author has asked that no LLM- or AI-generated code be contributed back to their project.  
-This fork was modified with the assistance of an LLM and exists solely for personal/server use and experimentation.  
+HeadlessTickManager builds on those ideas with additional math, stability features, and logging improvements.  
+Some code was adapted and extended with the help of an LLM to implement new smoothing and weighting logic.  
 
 ---
 
-## 🚀 Enhancements in this fork
+## 🚀 Features
 
 - **Active-world only logic**  
-  Empty worlds no longer increase tick rate — tick stays at `MinTickRate` until someone joins.
+  Empty worlds no longer raise tick rate; ticks stay at `MinTickRate` until someone joins.
 
 - **Busy-world weighting**  
-  Heavily populated worlds count more toward tick rate. After a soft cap, extra users contribute less (diminishing returns).
+  Populated worlds count more heavily; extra users past a soft cap contribute less.
 
 - **Join-burst handling**  
-  Short bursts of user joins temporarily boost tick rate to avoid desyncs.
+  Temporary tick boosts during short bursts of joins to prevent desyncs.
 
-- **EMA smoothing + hysteresis + cooldown**  
-  Prevents tick rate flapping when users join/leave rapidly. Tick adjustments are gradual and stable.
+- **EMA smoothing + hysteresis + cooldowns**  
+  Prevents “flapping” when users join/leave rapidly. Tick changes are stable and gradual.
 
-- **Configurable caps**  
-  `MinTickRate` and `MaxTickRate` remain enforced. Defaults: **30–144**.
+- **InstantIdleDrop**  
+  - When enabled: instantly drop to `MinTickRate` if all worlds are empty.  
+  - When disabled: smoothly ramp down using EMA smoothing.
 
-- **⚡ Logging**  
-  Optional log messages with emoji marker whenever the tick rate changes, making it easy to spot in headless logs.
-
-- **InstantIdleDrop**
-  - When true, the tick rate snaps immediately back to `MinTickRate` if all worlds are empty (no non-host users).  
-  - When false, the tick rate smoothly glides back down using EMA smoothing and hysteresis.  
+- **⚡ Clean logging**  
+  Readable log output with emoji markers, so tick changes are easy to spot at a glance.
 
 ---
 
-## Requirements
-- [Headless Client](https://wiki.resonite.com/Headless_Server_Software)
-- [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader)
+## 📜 Example Log Output
+
+```
+⚡ [HeadlessTickManager] → 30 ticks (idle; activeWorlds=0)  
+⚡ [HeadlessTickManager] → 42 ticks (raw=31.2, ema=42.0, activeWorlds=1, joins/min=0.00)  
+⚡ [HeadlessTickManager] → 53 ticks (raw=73.4, ema=52.8, activeWorlds=4, joins/min=9.60)  
+```
 
 ---
 
-## Installation
-1. Install [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader).
-2. Place the built `DynamicTickRate.dll` into your `rml_mods` folder inside of the headless installation.  
-   If missing, launch the client once with ResoniteModLoader and it will create the folder.
-3. Start the headless client. Check logs for ⚡ lines to verify the mod is working.
-
----
-
-## Config Options
+## ⚙️ Config Options
 
 - `Enable`  
   Enables or disables the mod.
@@ -65,38 +55,49 @@ This fork was modified with the assistance of an LLM and exists solely for perso
   Highest tick rate allowed (default: **144**).
 
 - `AddedTicksPerUser`  
-  How much tick rate increases per non-host user (weighted).
+  Extra ticks per non-host user (weighted).
 
 - `AddedTicksPerWorld`  
-  How much tick rate increases per extra **active** world beyond the first.
+  Extra ticks per additional **active** world beyond the first.
 
 - `ActiveWorldUserThreshold`  
-  Minimum number of non-host users required for a world to count as active (default: **1**).
+  Minimum non-host users required before a world counts as active.
 
 - `TopKWorlds` / `BusyWorldWeight`  
-  Heavily weights the busiest worlds in tick calculations.
+  Apply more weight to the busiest worlds when calculating ticks.
 
 - `PerWorldUserSoftCap` / `PerWorldDiminish`  
-  Soft cap and diminishing returns for per-world user counts.
+  Soft cap and diminishing returns per-world.
 
 - `JoinRateTicksPerJpm` / `JoinWindowSeconds`  
-  Join-burst handling (ticks added per join-per-minute, measurement window).
+  Join-burst handling: extra ticks per join-per-minute within the window.
 
 - `EmaAlpha`, `HysteresisTicks`, `MinChangeIntervalSeconds`,  
   `BigJumpThreshold`, `BigJumpCooldownSeconds`  
-  Smoothing and stability options.
+  Fine-grained smoothing and stability options.
 
 - `LogOnChange`  
-  Logs ⚡ lines when tick changes (default: **true**).
+  Whether to log ⚡ tick changes (default: **true**).
 
-- `InstantIdleDrop`
-  - Default: `false`
-  - When `true`, the tick rate will snap immediately down to `MinTickRate` whenever all worlds are empty (no non-host users).
-  - When `false`, the tick rate will glide back down gradually using EMA smoothing and hysteresis.
+- `InstantIdleDrop`  
+  - Default: `false`  
+  - `true`: Snap instantly to `MinTickRate` when no non-host users remain.  
+  - `false`: Glide back down gradually.
+
+---
+
+## 📥 Installation
+
+1. Install [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader).
+2. Place `HeadlessTickManager.dll` into the `rml_mods` folder inside your headless install.  
+   (If the folder doesn’t exist, launch once with RML and it will be created.)
+3. Restart your headless server.
+4. Check logs for ⚡ lines to confirm it’s running.
 
 ---
 
 ## ⚖️ License
-Licensed under the [MIT License](./LICENSE), inherited from the original project.  
-The original author retains credit for their work.  
-This fork is maintained independently and may diverge significantly.
+
+Licensed under the [MIT License](./LICENSE).  
+DynamicTickRate remains the work of its original author.  
+HeadlessTickManager is a separate project inspired by it, with expanded functionality and design choices.

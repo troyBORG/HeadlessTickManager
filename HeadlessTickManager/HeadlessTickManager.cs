@@ -6,14 +6,14 @@ using System.Text.Json;
 using FrooxEngine;
 using ResoniteModLoader;
 
-namespace DynamicTickRate;
+namespace HeadlessTickManager;
 
-public partial class DynamicTickRate : ResoniteMod
+public partial class HeadlessTickManager : ResoniteMod
 {
-    public override string Name => "DynamicTickRate"; // keep your final name here
+    public override string Name => "HeadlessTickManager"; // keep your final name here
     public override string Author => "Raidriar796 (+ tuning by troyBORG)";
     public override string Version => "1.1.0";
-    public override string Link => "https://github.com/troyBORG/DynamicTickRate";
+    public override string Link => "https://github.com/troyBORG/HeadlessTickManager";
 
     public static ModConfiguration? Config;
 
@@ -43,19 +43,19 @@ public partial class DynamicTickRate : ResoniteMod
 
             if (!ModLoader.IsHeadless)
             {
-                Msg("ℹ️ [DynamicTickRate] Not headless; skipping init.");
+                Msg("ℹ️ [HeadlessTickManager] Not headless; skipping init.");
                 return;
             }
 
             if (runner == null)
             {
-                Msg("❌ [DynamicTickRate] runner reflection failed (null). Is this the headless build?");
+                Msg("❌ [HeadlessTickManager] runner reflection failed (null). Is this the headless build?");
                 return;
             }
 
             // Patch SignalR BroadcastSession logging (KeyListenerAdded, Sending info, SessionInfo spam)
             // These logs are very noisy in headless servers and provide no useful info.
-            var harmony = new Harmony("troyBORG.DynamicTickRate.SignalRNoisePatch");
+            var harmony = new Harmony("troyBORG.HeadlessTickManager.SignalRNoisePatch");
             SignalRNoisePatch.Apply(harmony);
 
 
@@ -64,16 +64,16 @@ public partial class DynamicTickRate : ResoniteMod
             if (Config != null)
             {
                 tuning = ReadFromRml(Config);
-                Msg("🧩 [DynamicTickRate] Using RML configuration.");
+                Msg("🧩 [HeadlessTickManager] Using RML configuration.");
             }
             else
             {
                 var cfgPath = InferConfigPath($"{Name}.json");
                 if (TryReadJsonConfig(cfgPath, out tuning))
-                    Msg($"🧩 [DynamicTickRate] Loaded JSON configuration: {cfgPath}");
+                    Msg($"🧩 [HeadlessTickManager] Loaded JSON configuration: {cfgPath}");
                 else
                 {
-                    Msg($"⚠️ [DynamicTickRate] Config is null; using built-in defaults. (Tried: {cfgPath})");
+                    Msg($"⚠️ [HeadlessTickManager] Config is null; using built-in defaults. (Tried: {cfgPath})");
                     tuning = new TickTuning(); // controller defaults
                 }
             }
@@ -88,11 +88,11 @@ public partial class DynamicTickRate : ResoniteMod
             foreach (var w in Engine.Current.WorldManager.Worlds)
                 OnWorldAddedRemoved(w);
 
-            Msg($"⚡ [DynamicTickRate] Initialized v{Version} (Min={tuning.MinTickRate}, Max={tuning.MaxTickRate})");
+            Msg($"⚡ [HeadlessTickManager] Initialized v{Version} (Min={tuning.MinTickRate}, Max={tuning.MaxTickRate})");
         }
         catch (Exception ex)
         {
-            Msg($"❌ [DynamicTickRate] Init failed: {ex}");
+            Msg($"❌ [HeadlessTickManager] Init failed: {ex}");
         }
     }
 
@@ -185,7 +185,7 @@ public partial class DynamicTickRate : ResoniteMod
         }
         catch (Exception ex)
         {
-            ResoniteMod.Msg($"❌ [DynamicTickRate] JSON config parse failed: {ex.Message}");
+            ResoniteMod.Msg($"❌ [HeadlessTickManager] JSON config parse failed: {ex.Message}");
             return false;
         }
     }

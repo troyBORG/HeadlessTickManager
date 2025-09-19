@@ -5,7 +5,7 @@ using Elements.Core; // MathX.Clamp
 using FrooxEngine;
 using ResoniteModLoader;
 
-namespace DynamicTickRate;
+namespace HeadlessTickManager;
 
 public sealed class TickTuning
 {
@@ -168,7 +168,7 @@ public sealed class TickController
                 runner.TickRate = lastAppliedTick;
 
                 if (T.LogOnChange)
-                    ResoniteMod.Msg($"⚡ [DynamicTickRate] → {lastAppliedTick} ticks (idle; activeWorlds=0)");
+                    ResoniteMod.Msg($"⚡ [HeadlessTickManager] → {lastAppliedTick} ticks (idle; activeWorlds=0)");
             }
             return;
         }
@@ -223,7 +223,7 @@ public sealed class TickController
         if (T.LogOnChange)
         {
             ResoniteMod.Msg(
-                $"⚡ [DynamicTickRate] → {lastAppliedTick} ticks " +
+                $"⚡ [HeadlessTickManager] → {lastAppliedTick} ticks " +
                 $"(raw={raw:F1}, ema={emaTick:F1}, activeWorlds={activeWorldCount}, joins/min={joinsPerMinute:F2})"
             );
         }

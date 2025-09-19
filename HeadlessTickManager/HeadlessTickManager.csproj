@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamicTickRate</RootNamespace>
-    <AssemblyTitle>DynamicTickRate</AssemblyTitle>
+    <RootNamespace>HeadlessTickManager</RootNamespace>
+    <AssemblyTitle>HeadlessTickManager</AssemblyTitle>
     <Authors>troyBORG</Authors>
     <Copyright>Copyright © 2025 troyBORG</Copyright>
     <Version>1.1.0</Version>
@@ -32,6 +32,10 @@
     </Reference>
     <Reference Include="Elements.Core">
       <HintPath>$(ResonitePath)Elements.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(ResonitePath)\rml_libs\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

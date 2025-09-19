@@ -1,8 +1,8 @@
 using ResoniteModLoader;
 
-namespace DynamicTickRate;
+namespace HeadlessTickManager;
 
-public partial class DynamicTickRate
+public partial class HeadlessTickManager
 {
     // Enable/disable
     public static readonly ModConfigurationKey<bool> Enable =
@@ -70,5 +70,4 @@ public partial class DynamicTickRate
     // Instant drop-to-idle
     public static readonly ModConfigurationKey<bool> InstantIdleDrop =
     new("InstantIdleDrop", "When no active worlds, set tick to Min immediately", () => false);
-
 }

@@ -1,8 +1,8 @@
 using FrooxEngine;
 
-namespace DynamicTickRate;
+namespace HeadlessTickManager;
 
-public partial class DynamicTickRate
+public partial class HeadlessTickManager
 {
     private static void OnWorldAddedRemoved(World world)
     {

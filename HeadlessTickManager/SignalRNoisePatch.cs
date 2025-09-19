@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace DynamicTickRate
+namespace HeadlessTickManager
 {
     internal static class SignalRNoisePatch
     {
