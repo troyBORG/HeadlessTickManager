@@ -83,6 +83,12 @@ Some code was adapted and extended with the help of an LLM to implement new smoo
   - Default: `false`  
   - `true`: Snap instantly to `MinTickRate` when no non-host users remain.  
   - `false`: Glide back down gradually.
+---
+
+## 📖 Further Reading
+
+For a deeper explanation of each config option and example drop-in configs (Conservative / Balanced / Aggressive), see [🔗 ConfigTuningGuide.md](ConfigTuningGuide.md).
+
 
 ---
 
