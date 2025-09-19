@@ -11,8 +11,8 @@ namespace HeadlessTickManager;
 public partial class HeadlessTickManager : ResoniteMod
 {
     public override string Name => "HeadlessTickManager"; // keep your final name here
-    public override string Author => "Raidriar796 (+ tuning by troyBORG)";
-    public override string Version => "1.1.0";
+    public override string Author => "troyBORG";
+    public override string Version => "2.0.0";
     public override string Link => "https://github.com/troyBORG/HeadlessTickManager";
 
     public static ModConfiguration? Config;
