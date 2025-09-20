@@ -89,6 +89,35 @@ Some code was adapted and extended with the help of an LLM to implement new smoo
 
 For a deeper explanation of each config option and example drop-in configs (Conservative / Balanced / Aggressive), see [🔗 ConfigTuningGuide.md](ConfigTuningGuide.md).
 
+## 🛠️ tickwatch.sh
+
+This repo also includes **`tickwatch.sh`**, a helper script to make monitoring tick changes and user activity easier.  
+You may need to edit the `logdir="$HOME/.steam/steam/steamapps/common/Resonite/Headless/Logs"` if your headless puts its log somewhere else..
+
+### Features
+- ✅ Pretty-prints tick changes from **HeadlessTickManager** logs.  
+- 👥 Shows user joins and leaves inline, with world names and user IDs.  
+- 🌎 Detects and reports **world restarts** instead of mislabeling them as the headless user joining.  
+- ⚡ Explains what each tick field (`raw`, `ema`, `activeWorlds`, `joins/min`) means at the top of output.  
+- 🔄 Supports both one-shot view (last N lines) and live following (`-f`).  
+- 🎛️ Options:
+  - `-f` or `--follow` → follow live log updates  
+  - `-H` or `--hide-host` → hide the headless “self-join” lines  
+
+### Example
+```bash
+# Show the last 30 relevant lines
+./tickwatch.sh
+
+# Follow the log live, hiding headless restart joins
+./tickwatch.sh -f -H
+
+# Or a simple command to just run in a terminal to monitor your server..
+while true; do clear && ./tickwatch.sh; sleep 30; done
+```
+
+<img width="1560" height="848" alt="image" src="https://github.com/user-attachments/assets/0b84cf0a-a20c-4f50-a868-8d4c510207be" />
+
 
 ---
 
