@@ -30,6 +30,9 @@ public sealed class TickTuning
     public float JoinRateTicksPerJpm = 4.0f;      // tick boost per join-per-minute
     public int   JoinWindowSeconds = 45;          // shorter window = more responsive
 
+    public int JoinRateMaxBonusTicks = 40;        // safety clamp for join-burst scaling
+
+
     // Stability
     public float EmaAlpha = 0.22f;                // 0..1 (higher = more reactive)
     public int   HysteresisTicks = 2;             // ignore tiny differences
@@ -199,6 +202,7 @@ public sealed class TickController
         TrimJoinWindow_NoLock(now);
         double joinsPerMinute = recentJoins.Count * (60.0 / Math.Max(1, T.JoinWindowSeconds));
         double joinTicks = joinsPerMinute * T.JoinRateTicksPerJpm;
+        joinTicks = Math.Min(joinTicks, T.JoinRateMaxBonusTicks);
 
         // Raw target and clamp
         double raw = T.MinTickRate + userTicks + worldTicks + joinTicks;

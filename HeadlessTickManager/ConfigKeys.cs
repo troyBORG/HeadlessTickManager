@@ -43,6 +43,10 @@ public partial class HeadlessTickManager
     // Burst-join shaping
     public static readonly ModConfigurationKey<float> JoinRateTicksPerJpm =
         new("JoinRateTicksPerJpm", "Tick bonus per join-per-minute", () => 4.0f);
+    
+    public static readonly ModConfigurationKey<int> JoinRateMaxBonusTicks =
+    new("JoinRateMaxBonusTicks", "Maximum extra ticks allowed from join bursts", () => 40);
+
 
     public static readonly ModConfigurationKey<int> JoinWindowSeconds =
         new("JoinWindowSeconds", "Window for measuring recent joins (seconds)", () => 45);

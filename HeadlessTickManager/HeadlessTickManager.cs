@@ -12,7 +12,7 @@ public partial class HeadlessTickManager : ResoniteMod
 {
     public override string Name => "HeadlessTickManager"; // keep your final name here
     public override string Author => "troyBORG";
-    public override string Version => "2.0.0";
+    public override string Version => "2.0.1";
     public override string Link => "https://github.com/troyBORG/HeadlessTickManager";
 
     public static ModConfiguration? Config;
@@ -40,6 +40,12 @@ public partial class HeadlessTickManager : ResoniteMod
             // Ask RML for a config (may be null in your environment)
             Config = GetConfiguration();
             Config?.Save(true);
+
+            if (Config != null && !Config.GetValue(Enable))
+            {
+                Msg("ℹ️ [HeadlessTickManager] Disabled via config.");
+                return;
+            }
 
             if (!ModLoader.IsHeadless)
             {
@@ -86,7 +92,11 @@ public partial class HeadlessTickManager : ResoniteMod
             Engine.Current.WorldManager.WorldAdded += OnWorldAddedRemoved;
             Engine.Current.WorldManager.WorldAdded += OnUserJoinLeave;
             foreach (var w in Engine.Current.WorldManager.Worlds)
+            {
                 OnWorldAddedRemoved(w);
+                OnUserJoinLeave(w);
+            }
+
 
             Msg($"⚡ [HeadlessTickManager] Initialized v{Version} (Min={tuning.MinTickRate}, Max={tuning.MaxTickRate})");
         }
@@ -118,6 +128,8 @@ public partial class HeadlessTickManager : ResoniteMod
         // join burst
         JoinRateTicksPerJpm = cfg.GetValue(JoinRateTicksPerJpm),
         JoinWindowSeconds = cfg.GetValue(JoinWindowSeconds),
+        JoinRateMaxBonusTicks = cfg.GetValue(JoinRateMaxBonusTicks),
+
 
         // stability
         EmaAlpha = cfg.GetValue(EmaAlpha),
@@ -171,6 +183,8 @@ public partial class HeadlessTickManager : ResoniteMod
 
             Read(values, "JoinRateTicksPerJpm", ref tuning.JoinRateTicksPerJpm);
             Read(values, "JoinWindowSeconds", ref tuning.JoinWindowSeconds);
+            Read(values, "JoinRateMaxBonusTicks", ref tuning.JoinRateMaxBonusTicks);
+
 
             Read(values, "EmaAlpha", ref tuning.EmaAlpha);
             Read(values, "HysteresisTicks", ref tuning.HysteresisTicks);
