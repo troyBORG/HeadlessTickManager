@@ -12,7 +12,7 @@ public partial class HeadlessTickManager : ResoniteMod
 {
     public override string Name => "HeadlessTickManager"; // keep your final name here
     public override string Author => "troyBORG";
-    public override string Version => "2.0.1";
+    public override string Version => "2.0.2";
     public override string Link => "https://github.com/troyBORG/HeadlessTickManager";
 
     public static ModConfiguration? Config;
