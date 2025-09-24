@@ -11,34 +11,34 @@ public sealed class TickTuning
 {
     // Hard caps
     public int MinTickRate = 30;    // recommended floor
-    public int MaxTickRate = 144;   // safe ceiling; raise if you have CPU headroom
+    public int MaxTickRate = 90;   // safe ceiling; raise if you have CPU headroom
 
     // Linear-ish parts
-    public float AddedTicksPerUser = 0.6f;        // each non-host user (weighted)
-    public float AddedTicksPerExtraWorld = 1.5f;  // per extra ACTIVE world beyond the first
+    public float AddedTicksPerUser = 0.65f;        // each non-host user (weighted)
+    public float AddedTicksPerExtraWorld = 1.8f;  // per extra ACTIVE world beyond the first
 
     // What counts as "active world"?
     public int ActiveWorldUserThreshold = 1;      // >=1 non-host user -> active
 
     // Busy-world shaping
     public int   TopKWorlds = 2;                  // focus on top N busiest worlds
-    public float BusyWorldWeight = 1.75f;         // boost the busiest worlds
+    public float BusyWorldWeight = 1.6f;         // boost the busiest worlds
     public int   PerWorldUserSoftCap = 16;        // beyond this, marginal users diminish
-    public float PerWorldDiminish = 0.35f;        // weight for users above soft cap (0..1)
+    public float PerWorldDiminish = 0.40f;        // weight for users above soft cap (0..1)
 
     // Burst-join shaping
-    public float JoinRateTicksPerJpm = 4.0f;      // tick boost per join-per-minute
-    public int   JoinWindowSeconds = 45;          // shorter window = more responsive
+    public float JoinRateTicksPerJpm = 2.5f;      // tick boost per join-per-minute
+    public int   JoinWindowSeconds = 25;          // shorter window = more responsive
 
-    public int JoinRateMaxBonusTicks = 40;        // safety clamp for join-burst scaling
+    public int JoinRateMaxBonusTicks = 12;        // safety clamp for join-burst scaling
 
 
     // Stability
-    public float EmaAlpha = 0.22f;                // 0..1 (higher = more reactive)
+    public float EmaAlpha = 0.25f;                // 0..1 (higher = more reactive)
     public int   HysteresisTicks = 2;             // ignore tiny differences
-    public int   MinChangeIntervalSeconds = 5;
+    public int   MinChangeIntervalSeconds = 4;
     public int   BigJumpThreshold = 12;           // large changes trigger cooldown
-    public int   BigJumpCooldownSeconds = 12;
+    public int   BigJumpCooldownSeconds = 10;
 
     // Logging
     public bool LogOnChange = true;
