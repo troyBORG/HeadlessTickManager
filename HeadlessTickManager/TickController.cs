@@ -171,7 +171,7 @@ public sealed class TickController
                 runner.TickRate = lastAppliedTick;
 
                 if (T.LogOnChange)
-                    Msg($"{lastAppliedTick} ticks (idle; activeWorlds=0)");
+                    ResoniteMod.Msg($"{lastAppliedTick} ticks (idle; activeWorlds=0)");
             }
             return;
         }
@@ -224,13 +224,13 @@ public sealed class TickController
         lastChangeAt = now;
         runner.TickRate = lastAppliedTick;
 
-       if (T.LogOnChange)
+    if (T.LogOnChange)
     {
-        Msg(
+        ResoniteMod.Msg(
             $"Applied {lastAppliedTick} ticks " +
             $"(raw={raw:F1}, ema={emaTick:F1}, activeWorlds={activeWorldCount}, joins/min={joinsPerMinute:F2})"
         );
-    }
+}
 
 
         if (Math.Abs(delta) >= T.BigJumpThreshold)

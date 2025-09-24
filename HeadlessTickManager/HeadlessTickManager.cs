@@ -100,10 +100,10 @@ public partial class HeadlessTickManager : ResoniteMod
 
             Msg($"Initialized v{Version} (Min={tuning.MinTickRate}, Max={tuning.MaxTickRate})");
         }
-        catch (Exception ex)
-        {
-            Error("Init failed: {ex}");
-        }
+            catch (Exception ex)
+            {
+                Error($"Init failed: {ex}");
+            }
     }
 
     private static TickTuning ReadFromRml(ModConfiguration cfg) => new TickTuning
