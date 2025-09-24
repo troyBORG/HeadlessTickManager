@@ -130,14 +130,20 @@ BEGIN {
   }
 
   # ---------- TICK LINES ----------
-  b = index(line, "⚡ ")
-  if (b > 0) {
-    print substr(line, b)
+  # Match old styles (emoji or bracketed tag) OR new plain message format.
+  if (index(line, "⚡ ")>0) {
+    print substr(line, index(line, "⚡ "))
     next
   }
-  h = index(line, "[HeadlessTickManager]")
-  if (h > 0) {
-    print substr(line, h)
+  if (index(line, "[HeadlessTickManager]")>0) {
+    print substr(line, index(line, "[HeadlessTickManager]"))
+    next
+  }
+  # New plain message from TickController: "Applied N ticks (raw=..., ema=..., ...)"
+  if (line ~ /Applied [0-9]+ ticks \(raw=[0-9.]+, ema=[0-9.]+, activeWorlds=[0-9]+, joins\/min=[0-9.]+\)/) {
+    # Print a compact normalized line
+    match(line, /Applied [0-9]+ ticks \(raw=[^)]*\)/)
+    if (RSTART > 0) print substr(line, RSTART, RLENGTH)
     next
   }
 }
