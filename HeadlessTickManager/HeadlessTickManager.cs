@@ -43,19 +43,19 @@ public partial class HeadlessTickManager : ResoniteMod
 
             if (Config != null && !Config.GetValue(Enable))
             {
-                Msg("ℹ️ [HeadlessTickManager] Disabled via config.");
+                 Msg("Disabled via config.");
                 return;
             }
 
             if (!ModLoader.IsHeadless)
             {
-                Msg("ℹ️ [HeadlessTickManager] Not headless; skipping init.");
+                 Msg("Not headless; skipping init.");
                 return;
             }
 
             if (runner == null)
             {
-                Msg("❌ [HeadlessTickManager] runner reflection failed (null). Is this the headless build?");
+               Error("runner reflection failed (null). Is this the headless build?");
                 return;
             }
 
@@ -70,16 +70,16 @@ public partial class HeadlessTickManager : ResoniteMod
             if (Config != null)
             {
                 tuning = ReadFromRml(Config);
-                Msg("🧩 [HeadlessTickManager] Using RML configuration.");
+                Msg("Using RML configuration.");
             }
             else
             {
                 var cfgPath = InferConfigPath($"{Name}.json");
                 if (TryReadJsonConfig(cfgPath, out tuning))
-                    Msg($"🧩 [HeadlessTickManager] Loaded JSON configuration: {cfgPath}");
+                    Msg("Loaded JSON configuration: {cfgPath}");
                 else
                 {
-                    Msg($"⚠️ [HeadlessTickManager] Config is null; using built-in defaults. (Tried: {cfgPath})");
+                     Warn($"Config is null; using built-in defaults. (Tried: {cfgPath})");
                     tuning = new TickTuning(); // controller defaults
                 }
             }
@@ -98,11 +98,11 @@ public partial class HeadlessTickManager : ResoniteMod
             }
 
 
-            Msg($"⚡ [HeadlessTickManager] Initialized v{Version} (Min={tuning.MinTickRate}, Max={tuning.MaxTickRate})");
+            Msg($"Initialized v{Version} (Min={tuning.MinTickRate}, Max={tuning.MaxTickRate})");
         }
         catch (Exception ex)
         {
-            Msg($"❌ [HeadlessTickManager] Init failed: {ex}");
+            Error("Init failed: {ex}");
         }
     }
 
@@ -199,7 +199,7 @@ public partial class HeadlessTickManager : ResoniteMod
         }
         catch (Exception ex)
         {
-            ResoniteMod.Msg($"❌ [HeadlessTickManager] JSON config parse failed: {ex.Message}");
+            Error($"JSON config parse failed: {ex.Message}");
             return false;
         }
     }

@@ -171,7 +171,7 @@ public sealed class TickController
                 runner.TickRate = lastAppliedTick;
 
                 if (T.LogOnChange)
-                    ResoniteMod.Msg($"⚡ [HeadlessTickManager] → {lastAppliedTick} ticks (idle; activeWorlds=0)");
+                    Msg($"{lastAppliedTick} ticks (idle; activeWorlds=0)");
             }
             return;
         }
@@ -224,13 +224,14 @@ public sealed class TickController
         lastChangeAt = now;
         runner.TickRate = lastAppliedTick;
 
-        if (T.LogOnChange)
-        {
-            ResoniteMod.Msg(
-                $"⚡ [HeadlessTickManager] → {lastAppliedTick} ticks " +
-                $"(raw={raw:F1}, ema={emaTick:F1}, activeWorlds={activeWorldCount}, joins/min={joinsPerMinute:F2})"
-            );
-        }
+       if (T.LogOnChange)
+    {
+        Msg(
+            $"Applied {lastAppliedTick} ticks " +
+            $"(raw={raw:F1}, ema={emaTick:F1}, activeWorlds={activeWorldCount}, joins/min={joinsPerMinute:F2})"
+        );
+    }
+
 
         if (Math.Abs(delta) >= T.BigJumpThreshold)
             cooldownUntil = now.AddSeconds(T.BigJumpCooldownSeconds);
