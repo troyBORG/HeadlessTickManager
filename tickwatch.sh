@@ -130,7 +130,7 @@ BEGIN {
   }
 
   # ---------- TICK LINES ----------
-  # Match old styles (emoji or bracketed tag) OR new plain message format.
+  # Old styles (emoji or bracketed tag)
   if (index(line, "⚡ ")>0) {
     print substr(line, index(line, "⚡ "))
     next
@@ -139,11 +139,31 @@ BEGIN {
     print substr(line, index(line, "[HeadlessTickManager]"))
     next
   }
-  # New plain message from TickController: "Applied N ticks (raw=..., ema=..., ...)"
+
+  # New plain message: "Applied N ticks (raw=..., ema=..., ...)"
   if (line ~ /Applied [0-9]+ ticks \(raw=[0-9.]+, ema=[0-9.]+, activeWorlds=[0-9]+, joins\/min=[0-9.]+\)/) {
-    # Print a compact normalized line
     match(line, /Applied [0-9]+ ticks \(raw=[^)]*\)/)
-    if (RSTART > 0) print substr(line, RSTART, RLENGTH)
+    if (RSTART > 0) {
+      printf("⚡ %s\n", substr(line, RSTART, RLENGTH))
+    }
+    next
+  }
+
+  # Idle message: "NN ticks (idle; activeWorlds=0)"
+  if (line ~ /[0-9]+ ticks \(idle; activeWorlds=0\)/) {
+    match(line, /[0-9]+ ticks \(idle; activeWorlds=0\)/)
+    if (RSTART > 0) {
+      printf("⚡ %s\n", substr(line, RSTART, RLENGTH))
+    }
+    next
+  }
+
+  # Rare variant: "Applied NN ticks (idle; activeWorlds=0)"
+  if (line ~ /Applied [0-9]+ ticks \(idle; activeWorlds=0\)/) {
+    match(line, /Applied [0-9]+ ticks \(idle; activeWorlds=0\)/)
+    if (RSTART > 0) {
+      printf("⚡ %s\n", substr(line, RSTART, RLENGTH))
+    }
     next
   }
 }
