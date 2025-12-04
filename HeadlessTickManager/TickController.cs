@@ -51,6 +51,7 @@ public sealed class TickController
 {
     private readonly StandaloneFrooxEngineRunner runner;
     private readonly TickTuning T;
+    private readonly StatisticsTracker? statistics;
 
     // Track non-host users per world
     private readonly Dictionary<World, int> nonHostUsers = new();
@@ -66,15 +67,20 @@ public sealed class TickController
 
     private readonly object gate = new();
 
-    public TickController(StandaloneFrooxEngineRunner runner, TickTuning tuning, int initialTick)
+    public TickController(StandaloneFrooxEngineRunner runner, TickTuning tuning, int initialTick, StatisticsTracker? statistics = null)
     {
         this.runner = runner;
         this.T = tuning;
+        this.statistics = statistics;
 
         emaTick = initialTick;
         lastAppliedTick = initialTick;
         lastChangeAt = DateTime.UtcNow;
+        
+        statistics?.RecordTick(initialTick);
     }
+
+    public TickTuning? GetTuning() => T;
 
     public void OnWorldAdded(World w)
     {
@@ -169,6 +175,9 @@ public sealed class TickController
                 lastAppliedTick = candidateIdle;
                 lastChangeAt = now;
                 runner.TickRate = lastAppliedTick;
+                
+                statistics?.RecordTick(lastAppliedTick);
+                statistics?.RecordTickChange();
 
                 if (T.LogOnChange)
                     ResoniteMod.Msg($"{lastAppliedTick} ticks (idle; activeWorlds=0)");
@@ -223,15 +232,17 @@ public sealed class TickController
         lastAppliedTick = candidate;
         lastChangeAt = now;
         runner.TickRate = lastAppliedTick;
+        
+        statistics?.RecordTick(lastAppliedTick);
+        statistics?.RecordTickChange();
 
-    if (T.LogOnChange)
-    {
-        ResoniteMod.Msg(
-            $"Applied {lastAppliedTick} ticks " +
-            $"(raw={raw:F1}, ema={emaTick:F1}, activeWorlds={activeWorldCount}, joins/min={joinsPerMinute:F2})"
-        );
-}
-
+        if (T.LogOnChange)
+        {
+            ResoniteMod.Msg(
+                $"Applied {lastAppliedTick} ticks " +
+                $"(raw={raw:F1}, ema={emaTick:F1}, activeWorlds={activeWorldCount}, joins/min={joinsPerMinute:F2})"
+            );
+        }
 
         if (Math.Abs(delta) >= T.BigJumpThreshold)
             cooldownUntil = now.AddSeconds(T.BigJumpCooldownSeconds);
