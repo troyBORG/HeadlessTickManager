@@ -16,7 +16,10 @@ Some code was adapted and extended with the help of an LLM to implement new smoo
 * Scales higher when worlds are busy.
 * Adds a short boost when many users join at once (to keep existing players smooth).
 * Uses smoothing and cooldowns to avoid wild fluctuations.
-* Applies diminishing returns so big worlds don’t explode tick rate.
+* Applies diminishing returns so big worlds don't explode tick rate.
+* **NEW:** Validates configuration on startup to catch errors early.
+* **NEW:** Provides detailed startup summary and periodic status reports.
+* **NEW:** Monitors health and warns about potential configuration issues.
 
 Default range: **30 → 90 ticks/sec** 
 ---
@@ -69,23 +72,58 @@ tickRate = MinTickRate
 | JoinRateTicksPerJpm      | 2.5     | Tick bonus per join/minute            |
 | JoinRateMaxBonusTicks    | 12      | Cap on join burst ticks               |
 | JoinWindowSeconds        | 25      | How far back to look for joins        |
-| EmaAlpha                 | 0.28    | Smoothing factor                      |
+| EmaAlpha                 | 0.25    | Smoothing factor (0..1, higher = more reactive) |
 | HysteresisTicks          | 2       | Minimum delta before change           |
 | MinChangeIntervalSeconds | 4       | Minimum interval between changes      |
 | BigJumpThreshold         | 12      | Change size considered a big jump     |
 | BigJumpCooldownSeconds   | 10      | Cooldown after a big jump             |
-| InstantIdleDrop          | true    | Immediately drop to min if idle       |
+| InstantIdleDrop          | false   | Immediately drop to min if idle       |
+| LogOnChange             | true    | Log when tick rate changes            |
+
+**Note:** Default values may differ slightly from the table above. Check the startup summary in logs for actual values being used.
 
 ---
 
 
 ## 📜 Logs
 
+### Tick Rate Changes
+
 The mod prints when tick rate changes, e.g.:
 
 ```
-[INFO] [ResoniteModLoader/HeadlessTickManager] 62 ticks (raw=61.8, ema=61.9, activeWorlds=2, joins/min=0.80)
+[INFO] [ResoniteModLoader/HeadlessTickManager] Applied 62 ticks (raw=61.8, ema=61.9, activeWorlds=2, joins/min=0.80)
 ```
+
+### Startup Summary
+
+On initialization, the mod logs a detailed startup summary with:
+- Version information
+- Tick rate range (Min/Max)
+- Initial state (worlds and users)
+- Full configuration values
+
+### Periodic Status Summaries
+
+Every 5 minutes, the mod logs a status summary including:
+- Current and average tick rate
+- Peak and minimum tick rates reached
+- Active worlds and total users
+- Tick change frequency
+
+### Health Check Warnings
+
+The mod automatically warns about potential issues:
+- ⚠ Extended periods at maximum tick rate (suggests raising `MaxTickRate`)
+- ⚠ High tick rate fluctuation (suggests stability tuning)
+- ⚠ Stuck tick rate (indicates system not responding to changes)
+
+### Configuration Validation
+
+On startup, the mod validates all configuration values and warns about:
+- Invalid ranges (e.g., MinTickRate >= MaxTickRate)
+- Out-of-bounds values (e.g., EmaAlpha outside 0-1)
+- Potentially problematic combinations
 
 ---
 
