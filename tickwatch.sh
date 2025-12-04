@@ -215,19 +215,11 @@ BEGIN {
   }
 
   # ---------- HEALTH CHECK WARNINGS ----------
-  if (index(line, "⚠") > 0 || index(line, "WARN") > 0) {
+  # Only show warnings from HeadlessTickManager, not from other processes
+  if (index(line, "[HeadlessTickManager]") > 0 && (index(line, "⚠") > 0 || index(line, "WARN") > 0)) {
     # Extract just the warning message part
-    if (index(line, "[HeadlessTickManager]") > 0) {
-      start = index(line, "[HeadlessTickManager]")
-      printf("⚠️  %s\n", substr(line, start))
-    } else if (index(line, "⚠") > 0) {
-      # Find the warning emoji and show from there
-      start = index(line, "⚠")
-      printf("⚠️  %s\n", substr(line, start))
-    } else {
-      # Fallback: show the whole line if it contains WARN
-      printf("⚠️  %s\n", line)
-    }
+    start = index(line, "[HeadlessTickManager]")
+    printf("⚠️  %s\n", substr(line, start))
     next
   }
 
