@@ -122,13 +122,13 @@ public partial class HeadlessTickManager : ResoniteMod
             // Log enhanced startup summary
             LogStartupSummary(tuning, initialWorldCount, initialUserCount);
 
-            // Start periodic summaries (every 5 minutes)
+            // Start periodic summaries (every 30 minutes)
             SummaryTimer = new System.Threading.Timer(OnPeriodicSummary, null, 
-                TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
+                TimeSpan.FromMinutes(30), TimeSpan.FromMinutes(30));
 
-            // Start health checks (every 2 minutes)
+            // Start health checks (every 15 minutes)
             HealthCheckTimer = new System.Threading.Timer(OnHealthCheck, null,
-                TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(2));
+                TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(15));
 
             Msg($"Initialized v{Version} (Min={tuning.MinTickRate}, Max={tuning.MaxTickRate})");
         }
@@ -357,13 +357,10 @@ public partial class HeadlessTickManager : ResoniteMod
             var totalUsers = Engine.Current?.WorldManager?.Worlds?.Sum(w => Math.Max(0, w.UserCount - 1)) ?? 0;
 
             Msg("=== Periodic Status Summary ===");
-            Msg($"Current Tick Rate: {snapshot.CurrentTick} Hz");
-            Msg($"Average (last {snapshot.HistorySize} samples): {snapshot.AverageTick:F1} Hz");
-            Msg($"Peak: {snapshot.PeakTick} Hz, Min: {snapshot.MinTick} Hz");
-            Msg($"Active Worlds: {activeWorlds}, Total Users: {totalUsers}");
-            Msg($"Tick Changes: {snapshot.TickChangesPerHour:F1}/hour");
-            if (snapshot.TimeAtMax > 60)
-                Msg($"⚠ Time at Max Tick: {snapshot.TimeAtMax / 60:F1} minutes");
+            Msg($"Tick Rate: {snapshot.CurrentTick} Hz (avg: {snapshot.AverageTick:F1}, peak: {snapshot.PeakTick}, min: {snapshot.MinTick})");
+            Msg($"Active Worlds: {activeWorlds}, Total Users: {totalUsers}, Changes: {snapshot.TickChangesPerHour:F1}/hour");
+            if (snapshot.TimeAtMax > 300) // Only warn if at max for 5+ minutes
+                Msg($"⚠ At Max Tick for {snapshot.TimeAtMax / 60:F1} minutes");
             Msg("================================");
 
             Statistics.ResetSummaryTime();
@@ -398,7 +395,7 @@ public partial class HeadlessTickManager : ResoniteMod
             // Check if at max tick rate for extended period
             if (currentTick >= tuning.MaxTickRate)
             {
-                if ((DateTime.UtcNow - lastMaxTickWarning).TotalMinutes >= 5)
+                if ((DateTime.UtcNow - lastMaxTickWarning).TotalMinutes >= 30)
                 {
                     Warn($"⚠ Tick rate has been at maximum ({tuning.MaxTickRate} Hz) for {snapshot.TimeAtMax / 60:F1} minutes. Consider raising MaxTickRate if you have CPU headroom.");
                     lastMaxTickWarning = DateTime.UtcNow;
@@ -411,7 +408,7 @@ public partial class HeadlessTickManager : ResoniteMod
                 // Check change rate for high fluctuation
                 if (snapshot.TickChangesPerHour > 120) // More than 2 changes per minute average
                 {
-                    if ((DateTime.UtcNow - lastMaxTickWarning).TotalMinutes >= 10)
+                    if ((DateTime.UtcNow - lastMaxTickWarning).TotalMinutes >= 60)
                     {
                         Warn($"⚠ High tick rate fluctuation detected ({snapshot.TickChangesPerHour:F1} changes/hour). Consider adjusting EmaAlpha, HysteresisTicks, or MinChangeIntervalSeconds for stability.");
                         lastMaxTickWarning = DateTime.UtcNow;
@@ -423,12 +420,12 @@ public partial class HeadlessTickManager : ResoniteMod
             if (currentTick == lastHealthCheckTick)
             {
                 healthCheckStableCount++;
-                if (healthCheckStableCount >= 6) // 12 minutes of no changes
+                if (healthCheckStableCount >= 4) // 60 minutes of no changes (4 checks × 15 min)
                 {
                     // This is actually normal if idle, so only warn if we're not at min
                     if (currentTick > tuning.MinTickRate)
                     {
-                        Warn($"⚠ Tick rate has been stable at {currentTick} Hz for 12+ minutes. This may indicate the system is not responding to activity changes.");
+                        Warn($"⚠ Tick rate has been stable at {currentTick} Hz for 60+ minutes. This may indicate the system is not responding to activity changes.");
                         healthCheckStableCount = 0; // Reset to avoid spam
                     }
                 }
