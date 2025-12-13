@@ -64,6 +64,7 @@ public sealed class TickController
     private int lastAppliedTick;
     private DateTime lastChangeAt = DateTime.MinValue;
     private DateTime cooldownUntil = DateTime.MinValue;
+    private DateTime lastLogTime = DateTime.MinValue;
 
     private readonly object gate = new();
 
@@ -179,8 +180,11 @@ public sealed class TickController
                 statistics?.RecordTick(lastAppliedTick);
                 statistics?.RecordTickChange();
 
-                if (T.LogOnChange)
-                    ResoniteMod.Msg($"{lastAppliedTick} ticks (idle; activeWorlds=0)");
+                if (T.LogOnChange && (now - lastLogTime).TotalSeconds >= 15)
+                {
+                    ResoniteMod.Msg($"{lastAppliedTick} ticks (idle)");
+                    lastLogTime = now;
+                }
             }
             return;
         }
@@ -236,15 +240,20 @@ public sealed class TickController
         statistics?.RecordTick(lastAppliedTick);
         statistics?.RecordTickChange();
 
-        if (T.LogOnChange)
+        // Rate-limit logging: log every 15 seconds, or immediately for big jumps
+        bool isBigJump = Math.Abs(delta) >= T.BigJumpThreshold;
+        bool shouldLog = T.LogOnChange && (isBigJump || (now - lastLogTime).TotalSeconds >= 15);
+        
+        if (shouldLog)
         {
-            ResoniteMod.Msg(
-                $"Applied {lastAppliedTick} ticks " +
-                $"(raw={raw:F1}, ema={emaTick:F1}, activeWorlds={activeWorldCount}, joins/min={joinsPerMinute:F2})"
-            );
+            if (isBigJump)
+                ResoniteMod.Msg($"{lastAppliedTick} ticks (Δ{(delta > 0 ? "+" : "")}{delta}, {activeWorldCount} worlds, {joinsPerMinute:F1} joins/min)");
+            else
+                ResoniteMod.Msg($"{lastAppliedTick} ticks");
+            lastLogTime = now;
         }
 
-        if (Math.Abs(delta) >= T.BigJumpThreshold)
+        if (isBigJump)
             cooldownUntil = now.AddSeconds(T.BigJumpCooldownSeconds);
     }
 }
