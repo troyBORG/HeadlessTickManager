@@ -16,7 +16,11 @@ Some code was adapted and extended with the help of an LLM to implement new smoo
 * Scales higher when worlds are busy.
 * Adds a short boost when many users join at once (to keep existing players smooth).
 * Uses smoothing and cooldowns to avoid wild fluctuations.
-* Applies diminishing returns so big worlds don’t explode tick rate.
+* Applies diminishing returns so big worlds don't explode tick rate.
+* **NEW in v2.1.0:** Configuration validation on startup.
+* **NEW in v2.1.0:** Statistics tracking and periodic status summaries.
+* **NEW in v2.1.0:** Health check warnings for configuration issues.
+* **NEW in v2.1.0:** Configurable logging with rate limiting to reduce log bloat.
 
 Default range: **30 → 90 ticks/sec** 
 ---
@@ -75,17 +79,65 @@ tickRate = MinTickRate
 | BigJumpThreshold         | 12      | Change size considered a big jump     |
 | BigJumpCooldownSeconds   | 10      | Cooldown after a big jump             |
 | InstantIdleDrop          | true    | Immediately drop to min if idle       |
+| LogOnChange              | true    | Log when tick rate changes            |
+| EnablePeriodicSummaries  | true    | Enable periodic status summaries      |
+| EnableHealthWarnings     | true    | Enable health check warnings          |
+
+**Note:** Default values may differ slightly from the table above. Check the startup summary in logs for actual values being used.
 
 ---
 
 
 ## 📜 Logs
 
-The mod prints when tick rate changes, e.g.:
+### Tick Rate Changes
 
+The mod logs tick rate changes with rate limiting (max once per 15 seconds) to reduce log bloat. Normal changes show simply:
 ```
-[INFO] [ResoniteModLoader/HeadlessTickManager] 62 ticks (raw=61.8, ema=61.9, activeWorlds=2, joins/min=0.80)
+[INFO] [ResoniteModLoader/HeadlessTickManager] 62 ticks
 ```
+
+Big jumps (≥BigJumpThreshold) show additional details:
+```
+[INFO] [ResoniteModLoader/HeadlessTickManager] 62 ticks (Δ+12, 2 worlds, 0.8 joins/min)
+```
+
+### Startup Summary
+
+On initialization, the mod logs a detailed startup summary with:
+- Version information
+- Tick rate range (Min/Max)
+- Initial state (worlds and users)
+- Full configuration values
+- Logging configuration state
+
+### Periodic Status Summaries
+
+Every 2 hours (if enabled), the mod logs a status summary including:
+- Current and average tick rate
+- Peak and minimum tick rates reached
+- Active worlds and total users
+- Tick change frequency
+
+### Health Check Warnings
+
+The mod automatically warns about potential issues (if enabled):
+- ⚠ Extended periods at maximum tick rate (suggests raising `MaxTickRate`)
+- ⚠ High tick rate fluctuation (suggests stability tuning)
+
+### Configuration Validation
+
+On startup, the mod validates all configuration values and warns about:
+- Invalid ranges (e.g., MinTickRate >= MaxTickRate)
+- Out-of-bounds values (e.g., EmaAlpha outside 0-1)
+- Potentially problematic combinations
+
+### Logging Configuration
+
+You can control logging behavior via config:
+- `LogOnChange`: Enable/disable tick change logging (default: true)
+- `EnablePeriodicSummaries`: Enable/disable periodic summaries (default: true)
+- `EnableHealthWarnings`: Enable/disable health warnings (default: true)
 
 ---
 
