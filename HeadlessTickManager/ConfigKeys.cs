@@ -68,6 +68,12 @@ public partial class HeadlessTickManager
     public static readonly ModConfigurationKey<bool> LogOnChange =
         new("LogOnChange", "Log a line when tick changes", () => true);
 
+    public static readonly ModConfigurationKey<bool> EnablePeriodicSummaries =
+        new("EnablePeriodicSummaries", "Enable periodic status summaries (every 2 hours)", () => true);
+
+    public static readonly ModConfigurationKey<bool> EnableHealthWarnings =
+        new("EnableHealthWarnings", "Enable health check warnings (max tick rate, high fluctuation)", () => true);
+
     // Instant drop-to-idle
     public static readonly ModConfigurationKey<bool> InstantIdleDrop =
     new("InstantIdleDrop", "When no active worlds, set tick to Min immediately", () => true);
