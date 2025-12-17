@@ -17,10 +17,10 @@ Some code was adapted and extended with the help of an LLM to implement new smoo
 * Adds a short boost when many users join at once (to keep existing players smooth).
 * Uses smoothing and cooldowns to avoid wild fluctuations.
 * Applies diminishing returns so big worlds don't explode tick rate.
-* **NEW in v2.1.0:** Configuration validation on startup.
-* **NEW in v2.1.0:** Statistics tracking and periodic status summaries.
-* **NEW in v2.1.0:** Health check warnings for configuration issues.
-* **NEW in v2.1.0:** Configurable logging with rate limiting to reduce log bloat.
+* **NEW in v2.0.3:** Configuration validation on startup.
+* **NEW in v2.0.3:** Statistics tracking and periodic status summaries.
+* **NEW in v2.0.3:** Health check warnings for configuration issues.
+* **NEW in v2.0.3:** Configurable logging with rate limiting to reduce log bloat.
 
 Default range: **30 → 90 ticks/sec** 
 ---
